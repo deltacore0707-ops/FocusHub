@@ -14,15 +14,9 @@ local PlayerGui = LP:WaitForChild("PlayerGui")
 
 local CONFIG_FILE = "FocusHubAntiBat_Config.json"
 local GUI_NAME = "FocusHubAntiBat"
-local TITLE_IMAGE = "rbxassetid://103229327971654"
 local DISCORD_TEXT = "discord.gg/sY3HeSsUy"
-local BACKGROUND_IDS = {
-	"110989706287516",
-	"106344835483006",
-	"134260766475623",
-	"124053948669794",
-}
-local PW, PH, TOPH = 280, 406, 72
+local BG_ID = "124053948669794"
+local PW, PH, TOPH = 280, 318, 72
 local MAX_POWER = 300000
 
 local COLORS = {
@@ -42,7 +36,6 @@ local State = {
 	power = 0.5,
 	infJump = false,
 	key = "N",
-	bg = BACKGROUND_IDS[1],
 	pos = nil,
 }
 
@@ -62,7 +55,6 @@ pcall(function()
 			if type(cfg.antiBat) == "boolean" then State.antiBat = cfg.antiBat end
 			if type(cfg.power) == "number" then State.power = math.clamp(cfg.power, 0, 1) end
 			if type(cfg.infJump) == "boolean" then State.infJump = cfg.infJump end
-			if type(cfg.bg) == "string" and table.find(BACKGROUND_IDS, cfg.bg) then State.bg = cfg.bg end
 		end
 	end
 end)
@@ -178,7 +170,7 @@ local backgroundImage = Instance.new("ImageLabel")
 backgroundImage.Name = "PanelBackgroundImage"
 backgroundImage.Size = UDim2.new(1, 0, 1, 0)
 backgroundImage.BackgroundTransparency = 1
-backgroundImage.Image = "rbxassetid://" .. State.bg
+backgroundImage.Image = "rbxassetid://" .. BG_ID
 backgroundImage.ScaleType = Enum.ScaleType.Crop
 backgroundImage.ZIndex = 0
 backgroundImage.Active = false
@@ -276,32 +268,9 @@ titleFallback.TextColor3 = Color3.fromRGB(235, 235, 245)
 titleFallback.Font = Enum.Font.GothamBlack
 titleFallback.TextSize = 26
 titleFallback.TextXAlignment = Enum.TextXAlignment.Left
-titleFallback.Visible = false
+titleFallback.Visible = true
 titleFallback.ZIndex = 2
 titleFallback.Parent = topBar
-
-local titleImage = Instance.new("ImageLabel")
-titleImage.Name = "TitleImage"
-titleImage.Size = UDim2.new(1, -44, 1, -8)
-titleImage.Position = UDim2.new(0, 8, 0, 4)
-titleImage.BackgroundTransparency = 1
-titleImage.ImageColor3 = Color3.fromRGB(255, 255, 255)
-titleImage.Image = TITLE_IMAGE
-titleImage.ScaleType = Enum.ScaleType.Fit
-titleImage.ZIndex = 2
-titleImage.Parent = topBar
-
-task.spawn(function()
-	local t = 0
-	while t < 6 and not titleImage.IsLoaded do
-		task.wait(0.25)
-		t += 0.25
-	end
-	if not titleImage.IsLoaded then
-		titleImage.Visible = false
-		titleFallback.Visible = true
-	end
-end)
 
 local btnHolder = Instance.new("Frame")
 btnHolder.Size = UDim2.new(0, 28, 0, 26)
@@ -587,68 +556,6 @@ keyBtn.MouseButton1Click:Connect(function()
 	listening = true
 	keyBtn.Text = "..."
 	keyBtn.TextColor3 = COLORS.on
-end)
-
--- background selector
-local bgTitle = Instance.new("TextLabel")
-bgTitle.Size = UDim2.new(0.92, 0, 0, 18)
-bgTitle.Position = UDim2.new(0.04, 0, 0, 210)
-bgTitle.BackgroundTransparency = 1
-bgTitle.Text = "BACKGROUND"
-bgTitle.TextColor3 = COLORS.text
-bgTitle.TextStrokeTransparency = 0.4
-bgTitle.Font = Enum.Font.GothamBold
-bgTitle.TextSize = 10
-bgTitle.TextXAlignment = Enum.TextXAlignment.Left
-bgTitle.ZIndex = 3
-bgTitle.Parent = body
-
-local preview = Instance.new("ImageLabel")
-preview.Size = UDim2.new(0, 72, 0, 48)
-preview.Position = UDim2.new(0.04, 0, 0, 232)
-preview.BackgroundTransparency = 1
-preview.Image = "rbxassetid://" .. State.bg
-preview.ScaleType = Enum.ScaleType.Crop
-preview.ZIndex = 3
-preview.Parent = body
-Instance.new("UICorner", preview).CornerRadius = UDim.new(0, 7)
-do
-	local ps = Instance.new("UIStroke")
-	ps.Color = COLORS.stroke
-	ps.Thickness = 1
-	ps.Parent = preview
-end
-
-local selectors = {}
-for i, assetId in ipairs(BACKGROUND_IDS) do
-	local b = Instance.new("ImageButton")
-	b.Size = UDim2.new(0, 30, 0, 30)
-	b.Position = UDim2.new(0, 94 + (i - 1) * 34, 0, 241)
-	b.BackgroundTransparency = 1
-	b.BorderSizePixel = 0
-	b.Image = "rbxassetid://" .. assetId
-	b.ScaleType = Enum.ScaleType.Crop
-	b.ZIndex = 4
-	b.Parent = body
-	Instance.new("UICorner", b).CornerRadius = UDim.new(0, 5)
-	local st = Instance.new("UIStroke")
-	st.Parent = b
-	table.insert(selectors, { id = assetId, stroke = st })
-	b.MouseButton1Click:Connect(function()
-		State.bg = assetId
-		backgroundImage.Image = "rbxassetid://" .. assetId
-		preview.Image = "rbxassetid://" .. assetId
-		renderAll()
-		saveConfig()
-	end)
-end
-
-table.insert(renderers, function()
-	for _, e in ipairs(selectors) do
-		local sel = e.id == State.bg
-		e.stroke.Color = sel and COLORS.accent or COLORS.stroke
-		e.stroke.Thickness = sel and 2 or 1
-	end
 end)
 
 -- minimize
