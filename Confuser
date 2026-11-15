@@ -14,9 +14,8 @@ local PlayerGui = LP:WaitForChild("PlayerGui")
 
 local CONFIG_FILE = "FocusHubAntiBat_Config.json"
 local GUI_NAME = "FocusHubAntiBat"
-local TITLE_IMAGE = "rbxassetid://103229327971654"
+local TITLE_IMAGE = "rbxassetid://124053948669794"
 local DISCORD_TEXT = "discord.gg/sY3HeSsUy"
-local BG_ID = "124053948669794"
 local PW, PH, TOPH = 280, 318, 72
 local MAX_POWER = 300000
 
@@ -167,17 +166,6 @@ borderGradient.Color = ColorSequence.new({
 borderGradient.Parent = borderStroke
 TweenService:Create(borderGradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1), { Rotation = 360 }):Play()
 
-local backgroundImage = Instance.new("ImageLabel")
-backgroundImage.Name = "PanelBackgroundImage"
-backgroundImage.Size = UDim2.new(1, 0, 1, 0)
-backgroundImage.BackgroundTransparency = 1
-backgroundImage.Image = "rbxassetid://" .. BG_ID
-backgroundImage.ScaleType = Enum.ScaleType.Crop
-backgroundImage.ZIndex = 0
-backgroundImage.Active = false
-backgroundImage.Parent = mainFrame
-Instance.new("UICorner", backgroundImage).CornerRadius = UDim.new(0, 10)
-
 -- falling stars + shooting streaks
 local starContainer = Instance.new("Frame")
 starContainer.Size = UDim2.new(1, 0, 1, 0)
@@ -260,41 +248,17 @@ topBar.Active = true
 topBar.ZIndex = 2
 topBar.Parent = mainFrame
 
-local titleFallback = Instance.new("TextLabel")
-titleFallback.Size = UDim2.new(1, -44, 1, -8)
-titleFallback.Position = UDim2.new(0, 12, 0, 4)
-titleFallback.BackgroundTransparency = 1
-titleFallback.Text = "FOCUS HUB"
-titleFallback.TextColor3 = Color3.fromRGB(235, 235, 245)
-titleFallback.Font = Enum.Font.GothamBlack
-titleFallback.TextSize = 26
-titleFallback.TextXAlignment = Enum.TextXAlignment.Left
-titleFallback.Visible = false
-titleFallback.ZIndex = 2
-titleFallback.Parent = topBar
-
 local titleImage = Instance.new("ImageLabel")
 titleImage.Name = "TitleImage"
-titleImage.Size = UDim2.new(1, -44, 1, -8)
-titleImage.Position = UDim2.new(0, 8, 0, 4)
+titleImage.Size = UDim2.new(1, 0, 1, 0)
+titleImage.Position = UDim2.new(0, 0, 0, 0)
 titleImage.BackgroundTransparency = 1
 titleImage.ImageColor3 = Color3.fromRGB(255, 255, 255)
 titleImage.Image = TITLE_IMAGE
-titleImage.ScaleType = Enum.ScaleType.Fit
+titleImage.ScaleType = Enum.ScaleType.Crop
 titleImage.ZIndex = 2
 titleImage.Parent = topBar
-
-task.spawn(function()
-	local t = 0
-	while t < 6 and not titleImage.IsLoaded do
-		task.wait(0.25)
-		t += 0.25
-	end
-	if not titleImage.IsLoaded then
-		titleImage.Visible = false
-		titleFallback.Visible = true
-	end
-end)
+Instance.new("UICorner", titleImage).CornerRadius = UDim.new(0, 10)
 
 local btnHolder = Instance.new("Frame")
 btnHolder.Size = UDim2.new(0, 28, 0, 26)
